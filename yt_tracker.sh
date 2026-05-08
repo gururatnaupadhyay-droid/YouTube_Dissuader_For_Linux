@@ -2,7 +2,7 @@
 sleep 15  # Wait 15 seconds for the desktop to load properly
 export DISPLAY=:0
 LOG_FILE="$HOME/yt_usage.csv"
-THRESHOLD_SECONDS=10   # Check every 10 seconds
+THRESHOLD_SECONDS=5   # Check every 10 seconds
 REMINDER_COOLDOWN=1800 # Show reminder every 30 mins (1800s) if still on YT
 
 # Initialize CSV if it doesn't exist
@@ -39,12 +39,13 @@ if wmctrl -l | grep -qi "YouTube"; then
             fi
          #pkill terminal
 	else
-		declare -i last=$(echo $(./browser_history.sh | head -n 5 | tail -n3 | tail -n 1)| cut -f 2 -d " "  | cut -f2 -d":")
-		declare -i second_last=$(echo $(./browser_history.sh | head -n 5 | tail -n3 | head -n 1)| cut -f 2 -d " "  | cut -f2 -d":")
+		sleep 5
+		last=$(./browser_history.sh | grep "youtube" | head -n 1)
+		second_last=$(./browser_history.sh | grep "youtube.com/shorts" | head -n 1)
 		
-		time=$((last-second_last))
 		
-		if [[ $time -le "5" ]];then
+		
+		if [[ "$last" = "$second_last" ]];then
 		zenity --warning --text="Close Shorts Right Now" --width=500 --height=300
 		fi
 
